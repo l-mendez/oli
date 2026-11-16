@@ -1503,6 +1503,14 @@ export function createServerEnvironmentAtoms<R, E>(
       label: "environment-data:server:scheduled-tasks:live",
       tag: WS_METHODS.scheduledTasksSubscribe,
     }),
+    agentsLive: createEnvironmentRpcSubscriptionAtomFamily(runtime, {
+      label: "environment-data:server:agents:live",
+      tag: WS_METHODS.agentsSubscribe,
+    }),
+    agentMemory: createEnvironmentRpcQueryAtomFamily(runtime, {
+      label: "environment-data:server:agents:memory",
+      tag: WS_METHODS.agentsListMemory,
+    }),
     // A cold transcript scan is measured in seconds, so keep the result around
     // long enough that switching windows or re-rendering does not rescan. With
     // nothing to show yet, the server's last scan answers first, then a plain
@@ -1793,6 +1801,30 @@ export function createServerEnvironmentAtoms<R, E>(
     rotateScheduledTaskWebhookToken: createEnvironmentRpcCommand(runtime, {
       label: "environment-data:server:scheduled-task:rotate-webhook-token",
       tag: WS_METHODS.scheduledTasksRotateWebhookToken,
+      scheduler: configScheduler,
+      concurrency: configConcurrency,
+    }),
+    upsertAgent: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:agents:upsert",
+      tag: WS_METHODS.agentsUpsert,
+      scheduler: configScheduler,
+      concurrency: configConcurrency,
+    }),
+    deleteAgent: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:agents:delete",
+      tag: WS_METHODS.agentsDelete,
+      scheduler: configScheduler,
+      concurrency: configConcurrency,
+    }),
+    rememberForAgent: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:agents:remember",
+      tag: WS_METHODS.agentsRemember,
+      scheduler: configScheduler,
+      concurrency: configConcurrency,
+    }),
+    forgetAgentMemory: createEnvironmentRpcCommand(runtime, {
+      label: "environment-data:server:agents:forget",
+      tag: WS_METHODS.agentsForget,
       scheduler: configScheduler,
       concurrency: configConcurrency,
     }),

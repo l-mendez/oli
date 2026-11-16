@@ -385,6 +385,21 @@ import {
   ScheduledTaskUpsertInput,
   ScheduledTaskMutationResult,
 } from "./scheduledTask.ts";
+import {
+  AgentDeleteInput,
+  AgentDeleteResult,
+  AgentError,
+  AgentForgetInput,
+  AgentForgetResult,
+  AgentListInput,
+  AgentListMemoryInput,
+  AgentListMemoryResult,
+  AgentListResult,
+  AgentMutationResult,
+  AgentRememberInput,
+  AgentRememberResult,
+  AgentUpsertInput,
+} from "./agent.ts";
 import { SecretRequestAnswerInput, SecretRequestError } from "./secretRequest.ts";
 import {
   ProjectCloneActionInput,
@@ -562,6 +577,13 @@ export const WS_METHODS = {
   guestShareCreate: "guestShare.create",
   scheduledTasksListWebhookDeliveries: "scheduledTasks.listWebhookDeliveries",
   scheduledTasksGetWebhookDelivery: "scheduledTasks.getWebhookDelivery",
+
+  agentsSubscribe: "agents.subscribe",
+  agentsUpsert: "agents.upsert",
+  agentsDelete: "agents.delete",
+  agentsListMemory: "agents.listMemory",
+  agentsRemember: "agents.remember",
+  agentsForget: "agents.forget",
 
   cloudGetRelayClientStatus: "cloud.getRelayClientStatus",
   cloudInstallRelayClient: "cloud.installRelayClient",
@@ -2022,6 +2044,43 @@ const WsSubscribeServerLifecycleRpc = Rpc.make(WS_METHODS.subscribeServerLifecyc
   stream: true,
 });
 
+const WsAgentsSubscribeRpc = Rpc.make(WS_METHODS.agentsSubscribe, {
+  payload: AgentListInput,
+  success: AgentListResult,
+  error: Schema.Union([AgentError, EnvironmentAuthorizationError]),
+  stream: true,
+});
+
+const WsAgentsUpsertRpc = Rpc.make(WS_METHODS.agentsUpsert, {
+  payload: AgentUpsertInput,
+  success: AgentMutationResult,
+  error: Schema.Union([AgentError, EnvironmentAuthorizationError]),
+});
+
+const WsAgentsDeleteRpc = Rpc.make(WS_METHODS.agentsDelete, {
+  payload: AgentDeleteInput,
+  success: AgentDeleteResult,
+  error: Schema.Union([AgentError, EnvironmentAuthorizationError]),
+});
+
+const WsAgentsListMemoryRpc = Rpc.make(WS_METHODS.agentsListMemory, {
+  payload: AgentListMemoryInput,
+  success: AgentListMemoryResult,
+  error: Schema.Union([AgentError, EnvironmentAuthorizationError]),
+});
+
+const WsAgentsRememberRpc = Rpc.make(WS_METHODS.agentsRemember, {
+  payload: AgentRememberInput,
+  success: AgentRememberResult,
+  error: Schema.Union([AgentError, EnvironmentAuthorizationError]),
+});
+
+const WsAgentsForgetRpc = Rpc.make(WS_METHODS.agentsForget, {
+  payload: AgentForgetInput,
+  success: AgentForgetResult,
+  error: Schema.Union([AgentError, EnvironmentAuthorizationError]),
+});
+
 const WsScheduledTasksSubscribeRpc = Rpc.make(WS_METHODS.scheduledTasksSubscribe, {
   payload: ScheduledTaskListInput,
   success: ScheduledTaskListResult,
@@ -2181,6 +2240,12 @@ export const WsRpcGroup = RpcGroup.make(
   WsSecretsAnswerRequestRpc,
   WsScheduledTasksListWebhookDeliveriesRpc,
   WsScheduledTasksGetWebhookDeliveryRpc,
+  WsAgentsSubscribeRpc,
+  WsAgentsUpsertRpc,
+  WsAgentsDeleteRpc,
+  WsAgentsListMemoryRpc,
+  WsAgentsRememberRpc,
+  WsAgentsForgetRpc,
   WsServerReportClientActivityRpc,
   WsCloudGetRelayClientStatusRpc,
   WsCloudInstallRelayClientRpc,
